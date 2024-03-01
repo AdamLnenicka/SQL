@@ -32,7 +32,7 @@ Create SQL queries as required below:
 
 11. What is the average year of publication of books (not copies)? Only count books where the publication year is listed. Round the result to three decimal places. 
 
-12. Which publisher has the longest name? If there are multiple publishers with the same length name, select the first alphabetically (print their name). [5b]
+12. Which publisher has the longest name? If there are multiple publishers with the same length name, select the first alphabetically (print their name).
 
 13. What percentage of books have an edition listed? Round to three decimal places.
 
@@ -44,6 +44,6 @@ Create SQL queries as required below:
 
 17. How many copies were returned within two days of borrowing? 
 
-18. Print the name and surname of the person whose borrowed copies were most frequently returned after the set deadline. If there are multiple people, select the one with the higher ID. Use the format for printing: "name SURNAME" (first name all lowercase, surname all uppercase). [5b]
+18. Print the name and surname of the person whose borrowed copies were most frequently returned after the set deadline. If there are multiple people, select the one with the higher ID. Use the format for printing: "name SURNAME" (first name all lowercase, surname all uppercase).
 
 19. What keyword is the most frequent for copies recorded at the "Telecommunication Institute"? If there are multiple expressions in the first place, select the first one alphabetically. [5b]
