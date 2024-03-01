@@ -1,13 +1,14 @@
 
-TASK #1
+<h2>TASK #1</h2>
+
 The task is to convert the conceptual model (picture below) into a physical model of the relational database.
 
 ![image](https://github.com/AdamLnenicka/SQL/assets/70570107/03cae725-878a-406b-9312-0fb35409d28f)
 
-TASK #2
+<h2>TASK #2</h2>
 Create and compile SQL statements to create the appropriate tables. Then import the data into these tables. The catch is, data is entered in different data formats. To import data into the database you will need to transform, correct and adjust the data.
 
-TASK #3
+<h2>TASK #3</h2>
 
 Create SQL queries as required below:
 
