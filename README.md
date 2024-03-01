@@ -1,5 +1,5 @@
 
-<h2>TASK #1</h2> - completed in fyzicky_model.docx, created with  Oracle SQL Data modeker
+<h2>TASK #1</h2> - completed in fyzicky_model.docx, created with  Oracle SQL Data modeler
 
 The task is to convert the conceptual model (picture below) into a physical model of the relational database.
 
