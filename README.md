@@ -1,14 +1,22 @@
 
-<h2>TASK #1</h2> - completed in fyzicky_model.docx, created with  Oracle SQL Data modeler
+<h2>TASK #1</h2>
 
 The task is to convert the conceptual model (picture below) into a physical model of the relational database.
 
 ![image](https://github.com/AdamLnenicka/SQL/assets/70570107/03cae725-878a-406b-9312-0fb35409d28f)
 
-<h2>TASK #2</h2> - created with custom scripts, Oracle SQL Data modeler and Developer
+
+ - completed in fyzicky_model.docx, created with  Oracle SQL Data modeler
+
+   
+<h2>TASK #2</h2>
 Create and compile SQL statements to create the appropriate tables. Then import the data into these tables. The catch is, data is entered in different data formats. To import data into the database you will need to transform, correct and adjust the data.
 
-<h2>TASK #3</h2> - created with Oracle SQL Developer
+
+ - created with custom scripts, Oracle SQL Data modeler and Developer
+
+ 
+<h2>TASK #3</h2>
 
 Create SQL queries as required below:
 
@@ -46,4 +54,6 @@ Create SQL queries as required below:
 
 18. Print the name and surname of the person whose borrowed copies were most frequently returned after the set deadline. If there are multiple people, select the one with the higher ID. Use the format for printing: "name SURNAME" (first name all lowercase, surname all uppercase).
 
-19. What keyword is the most frequent for copies recorded at the "Telecommunication Institute"? If there are multiple expressions in the first place, select the first one alphabetically. 
+19. What keyword is the most frequent for copies recorded at the "Telecommunication Institute"? If there are multiple expressions in the first place, select the first one alphabetically.
+
+ - created with Oracle SQL Developer
