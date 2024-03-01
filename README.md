@@ -23,7 +23,7 @@ Create SQL queries as required below:
 5. List the title of the book (even in multiple copies) that was most frequently borrowed from books by the publisher "McGraw-Hill". If there are multiple books with the same number of borrowings, select the one that comes first alphabetically in the list. 
 
 6. What was the number of borrowings of books (copies) with the keyword "money" by the person who borrowed books with this expression most frequently?
-7. 
+
 8. Who most frequently borrowed books from other users, although they themselves own them. (This means the total number of borrowed copies of any book they own.) If there are users with the maximum number, sort them alphabetically by login and print the name and surname of the first person. Print the result in the format "NAME --- surname".
 
 9. List how many books were borrowed more frequently than the average for borrowing one book (meaning a specific title, even in multiple copies). Consider only those books that were borrowed at least once. 
