@@ -1,0 +1,307 @@
+1.
+
+SELECT text
+FROM vyraz
+WHERE id_vyrazu = (
+  SELECT vyraz_id_vyrazu
+  FROM klicove_slovo
+  JOIN kniha ON klicove_slovo.kniha_id_knihy = kniha.id_knihy
+  WHERE misto_vydani = 'Hoboken, NJ'
+  GROUP BY vyraz_id_vyrazu
+  ORDER BY COUNT(*) DESC, vyraz_id_vyrazu ASC
+  FETCH FIRST 1 ROWS ONLY
+);
+
+
+2.
+
+SELECT text
+FROM vyraz
+WHERE id_vyrazu = (
+  SELECT vyraz_id_vyrazu
+  FROM klicove_slovo
+  JOIN exemplar ON klicove_slovo.kniha_id_knihy = exemplar.kniha_id_knihy
+  JOIN vypujcka ON exemplar.id_exemplare = vypujcka.exemplar_id_exempláře
+  GROUP BY vyraz_id_vyrazu
+  ORDER BY COUNT(*) DESC, vyraz_id_vyrazu DESC
+  FETCH FIRST 1 ROWS ONLY
+);
+
+
+3.
+
+SELECT COUNT(DISTINCT vyraz_id_vyrazu)
+FROM klicove_slovo
+WHERE kniha_id_knihy IN (
+  SELECT kniha_id_knihy
+  FROM exemplar
+  WHERE osoba_id_osoby = (
+    SELECT id_osoby
+    FROM osoba
+    WHERE login = 'dvorai0'
+  )
+);
+
+
+4.
+
+WITH oddeleni_vyraz_count AS (
+  SELECT vyraz_id_vyrazu, COUNT(*) AS pocet
+  FROM klicove_slovo
+  JOIN exemplar ON klicove_slovo.kniha_id_knihy = exemplar.kniha_id_knihy
+  WHERE oddeleni_id_oddeleni = (
+    SELECT id_oddeleni
+    FROM oddeleni
+    WHERE nazev = 'Vývoj logistických systémů'
+  )
+  GROUP BY vyraz_id_vyrazu
+)
+
+SELECT pocet
+FROM oddeleni_vyraz_count
+WHERE vyraz_id_vyrazu = (
+  SELECT vyraz_id_vyrazu
+  FROM oddeleni_vyraz_count
+  ORDER BY pocet DESC, vyraz_id_vyrazu ASC
+  FETCH FIRST 1 ROWS ONLY
+);
+
+
+5.
+
+SELECT nazev
+FROM kniha
+WHERE id_knihy IN (
+  SELECT kniha_id_knihy
+  FROM exemplar
+  JOIN vypujcka ON exemplar.id_exemplare = vypujcka.exemplar_id_exempláře
+  WHERE nakladatel = 'McGraw-Hill'
+  GROUP BY kniha_id_knihy
+  ORDER BY COUNT(*) DESC, nazev ASC
+  FETCH FIRST 1 ROWS ONLY
+);
+
+
+6.
+
+SELECT COUNT(*)
+FROM vypujcka
+WHERE id_knihy IN (
+  SELECT id_knihy
+  FROM klicove_slovo_kniha
+  WHERE klicove_slovo = 'peníze'
+)
+AND osoba_id_osoby = (
+  SELECT osoba_id_osoby
+  FROM (
+    SELECT osoba_id_osoby, COUNT(*) AS pocet_pujcen
+    FROM vypujcka
+    WHERE id_knihy IN (
+      SELECT id_knihy
+      FROM klicove_slovo_kniha
+      WHERE klicove_slovo = 'peníze'
+    )
+    GROUP BY osoba_id_osoby
+  ) AS pujcky_s_klicovym_slovem
+  WHERE pocet_pujcen = (
+    SELECT MAX(pocet_pujcen)
+    FROM (
+      SELECT osoba_id_osoby, COUNT(*) AS pocet_pujcen
+      FROM vypujcka
+      WHERE id_knihy IN (
+        SELECT id_knihy
+        FROM klicove_slovo_kniha
+        WHERE klicove_slovo = 'peníze'
+      )
+      GROUP BY osoba_id_osoby
+    ) AS max_pujcen
+  )
+);
+
+
+7.
+
+SELECT CONCAT(jmeno, ' --- ', UPPER(prijmeni)) AS vysledek
+FROM osoba
+WHERE id_osoby IN (
+  SELECT osoba_id_osoby
+  FROM vypujcka
+  WHERE exemplar_id_exempláře IN (
+    SELECT id_exemplare
+    FROM exemplar
+    WHERE osoba_id_osoby IS NOT NULL
+  )
+  GROUP BY osoba_id_osoby
+  HAVING COUNT(*) = (
+    SELECT MAX(pocet_pujcenych)
+    FROM (
+      SELECT osoba_id_osoby, COUNT(*) AS pocet_pujcenych
+      FROM vypujcka
+      WHERE exemplar_id_exempláře IN (
+        SELECT id_exemplare
+        FROM exemplar
+        WHERE osoba_id_osoby IS NOT NULL
+      )
+      GROUP BY osoba_id_osoby
+    ) AS max_pujceno
+  )
+  ORDER BY login ASC
+  FETCH FIRST 1 ROWS ONLY
+);
+
+
+8.
+
+SELECT COUNT(*)
+FROM (
+  SELECT kniha_id_knihy
+  FROM exemplar
+  JOIN vypujcka ON exemplar.id_exemplare = vypujcka.exemplar_id_exempláře
+  GROUP BY kniha_id_knihy
+  HAVING COUNT(*) > (
+    SELECT AVG(pocet_pujcení) AS avg_pujceni
+    FROM (
+      SELECT kniha_id_knihy, COUNT(*) AS pocet_pujcení
+      FROM exemplar
+      JOIN vypujcka ON exemplar.id_exemplare = vypujcka.exemplar_id_exempláře
+      GROUP BY kniha_id_knihy
+    )
+  )
+) AS knihy_nad_prumer;
+
+
+9.
+
+SELECT COUNT(*)
+FROM kniha
+WHERE vydani IS NOT NULL;
+
+
+10.
+
+SELECT ROUND(AVG(rok_vydani), 3) AS prumerny_rok_vydani
+FROM kniha
+WHERE rok_vydani IS NOT NULL;
+
+
+11.
+
+
+SELECT nazev
+FROM nakladatel
+WHERE LENGTH(nazev) = (
+  SELECT MAX(LENGTH(nazev))
+  FROM nakladatel
+)
+ORDER BY nazev ASC
+FETCH FIRST 1 ROWS ONLY;
+
+12.
+
+SELECT ROUND(
+  (COUNT(*) * 100.0) / (
+    SELECT COUNT(*)
+    FROM kniha
+  ), 3) AS procento_edice
+FROM kniha
+WHERE edice IS NOT NULL;
+
+
+13.
+
+SELECT ROUND(
+  (COUNT(*) * 100.0) / (
+    SELECT COUNT(*)
+    FROM osoba
+  ), 3) AS procento_bez_emailu
+FROM osoba
+WHERE email IS NULL;
+
+
+14.
+
+FROM kniha
+WHERE edice IS NULL
+  AND pocet_stran >= 182
+  AND EXISTS (
+    SELECT *
+    FROM nakladatel
+    WHERE kniha.nakladatel = nakladatel.nazev
+      AND LOWER(nakladatel.nazev) LIKE '%z%'
+  )
+ORDER BY nazev ASC
+FETCH FIRST 1 ROWS ONLY;
+
+
+15.
+
+
+SELECT COUNT(*)
+FROM (
+  SELECT kniha.id_knihy, kniha.pocet_stran, kniha.misto_vydani
+  FROM kniha
+  WHERE kniha.pocet_stran > (
+    SELECT AVG(k.pocet_stran)
+    FROM kniha k
+    WHERE k.misto_vydani = kniha.misto_vydani
+  )
+) AS knihy_nad_prumer;
+
+16.
+
+SELECT COUNT(*)
+FROM vypujcka
+WHERE DATE_ADD(datum_pujceni, INTERVAL 2 DAY) >= datum_vrácení;
+
+
+17.
+
+SELECT CONCAT(LOWER(jmeno), ' ', UPPER(prijmeni)) AS vysledek
+FROM osoba
+WHERE id_osoby = (
+  SELECT osoba_id_osoby
+  FROM vypujcka
+  WHERE (DATEDIFF(datum_vrácení, datum_vrácení_prevziti) > 0)
+  GROUP BY osoba_id_osoby
+  HAVING COUNT(*) = (
+    SELECT MAX(pocet_sankci)
+    FROM (
+      SELECT osoba_id_osoby, COUNT(*) AS pocet_sankci
+      FROM vypujcka
+      WHERE (DATEDIFF(datum_vrácení, datum_vrácení_prevziti) > 0)
+      GROUP BY osoba_id_osoby
+    ) AS sankce
+  )
+  ORDER BY id_osoby DESC
+  FETCH FIRST 1 ROWS ONLY
+);
+
+
+18.
+
+SELECT klicove_slovo
+FROM (
+  SELECT klicove_slovo, COUNT(*) AS pocet
+  FROM klicove_slovo_exemplar
+  WHERE id_exemplare IN (
+    SELECT id_exemplare
+    FROM exemplar
+    WHERE oddeleni = 'Telekomunikační ústav'
+  )
+  GROUP BY klicove_slovo
+) AS frekventovane_slovo
+WHERE pocet = (
+  SELECT MAX(pocet)
+  FROM (
+    SELECT klicove_slovo, COUNT(*) AS pocet
+    FROM klicove_slovo_exemplar
+    WHERE id_exemplare IN (
+      SELECT id_exemplare
+      FROM exemplar
+      WHERE oddeleni = 'Telekomunikační ústav'
+    )
+    GROUP BY klicove_slovo
+  ) AS max_pocet
+)
+ORDER BY klicove_slovo ASC
+FETCH FIRST 1 ROWS ONLY;
