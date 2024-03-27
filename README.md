@@ -55,5 +55,3 @@ Create SQL queries as required below:
 18. Print the name and surname of the person whose borrowed copies were most frequently returned after the set deadline. If there are multiple people, select the one with the higher ID. Use the format for printing: "name SURNAME" (first name all lowercase, surname all uppercase).
 
 19. What keyword is the most frequent for copies recorded at the "Telecommunication Institute"? If there are multiple expressions in the first place, select the first one alphabetically.
-
- - created with Oracle SQL Developer
